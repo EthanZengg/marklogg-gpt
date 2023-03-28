@@ -31,7 +31,7 @@ class ChatGPTBot(BaseBot):
         self.history.append([f"{query}", message])
         # only keep 5 history
         self.history = self.history[-5:]
-        print(message)
+        print('message', message)
         return message
 
     async def ask_stream(self, query, **options):

@@ -39,7 +39,7 @@ EDGE_TTS_DICT = {
 DEFAULT_COMMAND = ("5-1", "5-5")
 
 KEY_WORD = ("帮我", "请回答")
-PROMPT = "请用100字以内回答"
+PROMPT = "请用50字以内回答"
 # simulate_xiaoai_question
 MI_ASK_SIMULATE_DATA = {
     "code": 0,
@@ -51,13 +51,14 @@ MI_ASK_SIMULATE_DATA = {
 @dataclass
 class Config:
     hardware: str = "LX06"
-    account: str = os.getenv("MI_USER", "")
-    password: str = os.getenv("MI_PASS", "")
-    openai_key: str = os.getenv("OPENAI_API_KEY", "")
-    mi_did: str = os.getenv("MI_DID", "")
+    account: str = os.getenv("MI_USER", "18124615837")
+    password: str = os.getenv("MI_PASS", "877095605521.Q")
+    openai_key: str = os.getenv(
+        "OPENAI_API_KEY", "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")
+    mi_did: str = os.getenv("MI_DID", "500864892")
     keyword: Iterable[str] = KEY_WORD
     prompt: str = PROMPT
-    mute_xiaoai: bool = False
+    mute_xiaoai: bool = True
     bot: str = "chatgpt"
     cookie: str = ""
     api_base: str | None = None
@@ -81,6 +82,7 @@ class Config:
     @classmethod
     def from_options(cls, options: argparse.Namespace) -> Config:
         config = cls()
+        print("cinfig", config)
         if options.config:
             config.read_from_config(options.config)
         for key, value in vars(options).items():

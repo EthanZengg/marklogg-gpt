@@ -419,10 +419,12 @@ class MiGPT:
                 query = f"{query}，{self.config.prompt}"
                 if self.config.mute_xiaoai:
                     await self.stop_if_xiaoai_is_playing()
-                else:
+                await self.mina_service.player_pause(self.device_id)
+
+                # else:
                     # waiting for xiaoai speaker done
-                    await asyncio.sleep(8)
-                await self.do_tts("正在问GPT请耐心等待")
+                    #await asyncio.sleep(8)
+                # await self.do_tts("正在问GPT请耐心等待")
                 try:
                     print(
                         "以下是小爱的回答: ",

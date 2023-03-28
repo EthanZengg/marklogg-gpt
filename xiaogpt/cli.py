@@ -50,7 +50,7 @@ def main():
         "--mute_xiaoai",
         dest="mute_xiaoai",
         action="store_true",
-        default=None,
+        default=True,
         help="try to mute xiaoai answer",
     )
     parser.add_argument(
