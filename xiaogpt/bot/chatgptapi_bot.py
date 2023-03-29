@@ -6,11 +6,13 @@ from xiaogpt.utils import split_sentences
 
 
 class ChatGPTBot(BaseBot):
-    def __init__(self, openai_key, api_base=None):
+    def __init__(self, openai_key, api_base=None, proxy=None):
         self.history = []
         openai.api_key = openai_key
         if api_base:
             openai.api_base = api_base
+        if proxy:
+            openai.proxy = proxy
 
     async def ask(self, query, **options):
         ms = []
@@ -30,8 +32,9 @@ class ChatGPTBot(BaseBot):
         )
         self.history.append([f"{query}", message])
         # only keep 5 history
-        self.history = self.history[-5:]
-        print('message', message)
+        first_history = self.history.pop(0)
+        self.history = [first_history] + self.history[-5:]
+        print(message)
         return message
 
     async def ask_stream(self, query, **options):
@@ -60,4 +63,5 @@ class ChatGPTBot(BaseBot):
         finally:
             print()
             self.history.append([f"{query}", message])
-            self.history = self.history[-5:]
+            first_history = self.history.pop(0)
+            self.history = [first_history] + self.history[-5:]

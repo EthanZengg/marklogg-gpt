@@ -4,7 +4,9 @@ import argparse
 import json
 import os
 from dataclasses import dataclass, field
-from typing import Iterable, Any
+from typing import Any, Iterable
+
+from xiaogpt.utils import validate_proxy
 
 LATEST_ASK_API = "https://userprofile.mina.mi.com/device_profile/v2/conversation?source=dialogu&hardware={hardware}&timestamp={timestamp}&limit=2"
 COOKIE_TEMPLATE = "deviceId={device_id}; serviceToken={service_token}; userId={user_id}"
@@ -39,7 +41,8 @@ EDGE_TTS_DICT = {
 DEFAULT_COMMAND = ("5-1", "5-5")
 
 KEY_WORD = ("帮我", "请回答")
-PROMPT = "请用50字以内回答"
+CHANGE_PROMPT_KEY_WORD = ("更改提示词",)
+PROMPT = "以下请用100字以内回答"
 # simulate_xiaoai_question
 MI_ASK_SIMULATE_DATA = {
     "code": 0,
@@ -51,12 +54,13 @@ MI_ASK_SIMULATE_DATA = {
 @dataclass
 class Config:
     hardware: str = "LX06"
-    account: str = os.getenv("MI_USER", "18124615837")
-    password: str = os.getenv("MI_PASS", "877095605521.Q")
-    openai_key: str = os.getenv(
-        "OPENAI_API_KEY", "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")
-    mi_did: str = os.getenv("MI_DID", "500864892")
+    account: str = os.getenv("MI_USER", "")
+    password: str = os.getenv("MI_PASS", "")
+    openai_key: str = os.getenv("OPENAI_API_KEY", "")
+    proxy: str | None = None
+    mi_did: str = os.getenv("MI_DID", "")
     keyword: Iterable[str] = KEY_WORD
+    change_prompt_keyword: Iterable[str] = CHANGE_PROMPT_KEY_WORD
     prompt: str = PROMPT
     mute_xiaoai: bool = True
     bot: str = "chatgpt"
@@ -70,6 +74,10 @@ class Config:
     enable_edge_tts: bool = False
     edge_tts_voice: str = "zh-CN-XiaoxiaoNeural"
     gpt_options: dict[str, Any] = field(default_factory=dict)
+
+    def __post_init__(self) -> None:
+        if self.proxy:
+            validate_proxy(self.proxy)
 
     @property
     def tts_command(self) -> str:
